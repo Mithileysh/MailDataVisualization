@@ -9,11 +9,11 @@
 
 ---
 [Mail frequency]
-<img src="images/frequency_v1?raw=true"/>
+<img src="images/frequency_v1.png?raw=true"/>
 
 ---
 [Mail timeline]
-<img src="images/timeline_v1?raw=true"/>
+<img src="images/timeline_v1.png?raw=true"/>
 
 ---
 
