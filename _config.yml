@@ -1,11 +1,11 @@
 title: Mail Data Visualization
-logo: "/images/Website_Logo.png"
-description: 
-  We provide the visualization of Mail Data in this webpages 
-  <br><br>
-  Visulaize the limitless! 
-  <br><br>
-  Visualization helps humans to observe things easily, to filter out/ notice important things through a glance.
+logo: "/images/Website_Logo.png?raw=true"
+description: > 
+
+Visulaize the limitless! 
+We provide the visualization of Mail Data in this webpages 
+<br><br>
+Visualization helps humans to observe things easily, to filter out/ notice important things through a glance.
 
 
 theme: jekyll-theme-minimal
