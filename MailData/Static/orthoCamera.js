@@ -50,10 +50,10 @@ export function init(renderType, mail_data) {
 		[G_cube_position, G_cube_info] = renderTimeline(scene, name_list, name_map, mail_data, min_time, max_time, min_x, max_x);
 	}
 	else if(renderType == "network"){
-		renderNetwork(scene);
+		renderNetwork(scene, name_list, name_map);
 	}
 	else if(renderType == "frequency"){
-		[G_cube_position, G_cube_info] = renderFrequency(scene, name_list, name_map, min_x, max_x, min_y, max_y);
+		[G_cube_position, G_cube_info] = renderFrequency(scene, name_list, name_map, mail_data, min_x, max_x, min_y, max_y);
 	}
 	else{
 		console.log("render something else.");
@@ -72,7 +72,7 @@ export function init(renderType, mail_data) {
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 	window.addEventListener( 'resize', onWindowResize, false );
 }
-function renderFrequency(scene, name_list, name_map, min_x, max_x, min_y, max_y){
+function renderFrequency(scene, name_list, name_map, mail_data, min_x, max_x, min_y, max_y){
 	console.log("render frequency");
     var cube_position = {};
     var cube_info = {}
@@ -103,7 +103,9 @@ function renderFrequency(scene, name_list, name_map, min_x, max_x, min_y, max_y)
 			//cube.rotation.set(rand(Math.PI), rand(Math.PI), 0);
 			//cube.rotation.set(0, 0, 0);
 			//cube.scale.set(rand(3, 6), rand(3, 6), rand(3, 6));
-			cube.scale.set(Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5);
+			var ratio = name_map[people_name]["end"].length/mail_data.length *100
+			console.log(ratio);
+			cube.scale.set(ratio+ 0.5, ratio + 0.5, ratio + 0.5);
 			//return cubePivot;
 			return cube;
 		}
@@ -113,8 +115,85 @@ function renderFrequency(scene, name_list, name_map, min_x, max_x, min_y, max_y)
 	
 	return [cube_position, cube_info]
 }
-function renderNetwork(scene){
+function renderNetwork(scene, name_list, name_map){
 	console.log("render network");
+	var cube_position = {};
+	var cube_info = {}
+
+
+    const lines = name_list.map((name) => {
+        //console.log(name);
+        
+        //console.log(name_map[name]);
+        var sender = name;
+        var linePivot_array = [];
+
+
+        for(var end_node in name_map[name]["end"]){
+            var receiver = name_map[name]["end"][end_node];
+
+            const linePivot = new THREE.Object3D();
+            scene.add(linePivot);
+            var lineGeo = new THREE.Geometry();
+            var lineMat = new THREE.LineBasicMaterial( { color: 0x000000 } );
+
+            //console.log("("+name_map[sender].x+", "+name_map[sender].y+")");
+            //console.log("("+name_map[receiver].x+", "+name_map[receiver].y+")");
+
+            lineGeo.vertices.push(new THREE.Vector3( name_map[sender].x, name_map[sender].y, 0) );
+            lineGeo.vertices.push(new THREE.Vector3(name_map[receiver].x, name_map[receiver].y, 0) );
+            var line = new THREE.Line( lineGeo, lineMat );
+
+            linePivot.add(line);
+            linePivot_array.push(linePivot);
+        }
+        return linePivot_array
+    });
+
+    //console.log(lines);
+
+    const planeSize = 5;
+    const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
+
+    const planes = name_list.map((name) => {
+        //console.log(name);
+        const planePivot = new THREE.Object3D();
+        scene.add(planePivot);
+
+        //var new_color = name_map[name]["color"];
+		if(name.includes("enron")){
+			var name_color = 0x467dff;
+		}
+		else{
+			var name_color = 0xff8246;
+		}
+		var new_color = name_color;
+		//console.log(typeof(0xa6f379))
+        const planeMat = new THREE.MeshBasicMaterial( {color: new_color, side: THREE.DoubleSide} );
+		const mesh = new THREE.Mesh(planeGeo, planeMat);
+		
+		
+        planePivot.add(mesh);
+        // move plane so top left corner is origin
+        //mesh.position.set(planeSize / 2, planeSize / 2, 0);
+        return planePivot;
+
+    });
+
+
+	var name_count = 0;
+    for(var plane in planes){
+        //console.log(planes[plane]);
+        var now_name = name_list[name_count];
+
+        const x = name_map[now_name].x;
+        const y = name_map[now_name].y; 
+        planes[plane].position.set(x, y, 0);
+        
+        name_count = name_count + 1;
+	}
+	
+	return [cube_position, cube_info]
 }
 function renderTimeline(scene, name_list, name_map, mail_data, min_time, max_time, min_x, max_x){
 	var cube_position = {};
