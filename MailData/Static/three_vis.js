@@ -23,7 +23,7 @@ function initial_function(mail_data){
 
 }
 
-$.getJSON('/real/enron_mail_20150507_1999_2000.json', function(data) {
+$.getJSON('https://RimiChen.github.io/MailDataVisualization/MailData/Real/enron_mail_20150507.json', function(data) {
     
     var mail_data = [];
     mail_data = data;
