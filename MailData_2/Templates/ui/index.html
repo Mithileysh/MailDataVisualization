@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<!--Title-->
+<title>Mail Data Interface</title>
+
+<!-- CSS style file -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+
+<link rel="stylesheet" href="{{url_for('static',filename='./css/main_page.css')}}">
+
+<!-- Script files -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+
+
+<script src="//d3js.org/d3.v4.min.js"></script>
+<script src="{{url_for('static',filename='mainInterface.js')}}"></script>
+
+
+</head>
+
+
+<body onload = "mainInterface.testFunction()">
+
+<div id="main_interface">
+
+  <div id ="left_frame">
+    <div id ="left_top_frame">
+    <!-- put the search bar in here-->
+      <input id ="input_query" type="text" value="jaesenj@live.com">
+    </div>
+    
+    <div id ="left_down_frame">
+      <!-- render the graph-->
+      <!-- change the src when click button-->
+      <iframe id = "left_tab_pages" src="/people"></iframe>    
+    </div>
+  </div>
+
+  <div id ="right_frame">
+    <!-- buttons in here-->
+    <!--<canvas id="myCanvas" width="200" height="100" style="border:1px solid #d3d3d3;"></cavas>-->
+    <canvas id="canvas_people" ></canvas>
+    <canvas id="canvas_timeline" ></canvas>
+    <canvas id="canvas_topics" ></canvas>    
+  </div>
+
+
+</div>
+
+</body>
+
+</html>

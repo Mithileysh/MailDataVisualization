@@ -1,0 +1,64 @@
+#main_interface{
+    width: 100%;
+	height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgb(139, 139, 139);
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+#left_frame{
+    height: 100%;
+    width: 30%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #000000;
+	color: rgba(255, 255, 255, 0);
+    overflow-x: hidden;
+}
+#right_frame{
+    height: 100%;
+    width: 70%;
+    position: fixed;
+    top: 0;
+    left: 30%;
+    background-color: #ffffff;
+	color: rgba(0, 0, 0, 0);
+    overflow-x: hidden;
+}
+#filter_bar{
+    height: 15%;
+    width: 90%;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 5%;
+    background-color: #dadada;
+	color: rgba(0, 0, 0, 0);
+    overflow-x: hidden;
+    overflow-y: hidden;
+    box-shadow: 5px 10px #888888;
+}
+#visualization_canvas{
+    height: 85%;
+    width: 100%;
+    position: absolute;
+    top: 15%;
+    left: 0;
+    background-color: #acacac;
+	color: rgba(0, 0, 0, 0);
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+#text_message{
+    height: 50%;
+    width: 50%;
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    background-color: #000000;
+	color: rgba(255, 250, 250, 1);
+
+}

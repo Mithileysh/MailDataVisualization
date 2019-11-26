@@ -1,0 +1,36 @@
+<html lang="en">
+	<head>
+		<title>three.js webgl - interactive cubes</title>
+		<meta charset="utf-8">
+        <!-- CSS style file -->
+		<!-- CSS style file -->
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" href="{{url_for('static',filename='./css/main_page.css')}}">
+        <link rel="stylesheet" href="{{url_for('static',filename='./css/three_vis.css')}}">
+
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script type="text/javascript" src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        
+		
+        <script type="module" src="{{url_for('static',filename='three_vis.js')}}"></script>
+		
+	</head>
+	<body>
+		<div id="main_interface">
+			<div id ="left_frame">
+			</div>
+			<div id ="right_frame">
+				<div id ="filter_bar">
+					<canvas id="text_message"></canvas>
+				</div>
+				<div id ="visualization_canvas">
+					<!--<canvas id="c"></canvas>-->
+
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
