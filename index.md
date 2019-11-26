@@ -4,7 +4,7 @@
 
 ### Visaulization types
 
-[Network visualization](/MailData/Templates/vis_index.html)
+[Network visualization](http://RimiChen.github.io/MailDataVisualization/MailData/Templates/vis_index.html)
 <img src="https://rimichen.github.io/MailDataVisualization/images/network_v1.png?raw=true"/>
 
 ---
