@@ -16,9 +16,9 @@ function initial_function(mail_data){
     //TIMELINE.timeline_vis(mail_data);
     //TIMELINE_MOUSE.timeline_mouse(mail_data);
     //MOUSEOVER.mouseover(mail_data);
-    //ORTHOCAMERA.init("timeline", mail_data);
+    ORTHOCAMERA.init("timeline", mail_data);
     //ORTHOCAMERA.init("network", mail_data);
-    ORTHOCAMERA.init("frequency", mail_data);
+    //ORTHOCAMERA.init("frequency", mail_data);
     ORTHOCAMERA.animate();
 
 }
