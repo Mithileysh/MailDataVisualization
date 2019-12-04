@@ -25,6 +25,9 @@ function initial_function(datanode){
 
     ELEMENTTEMPLATE.drawRange("selection_frame", "range_1", 0, 100);
     ELEMENTTEMPLATE.drawRange("selection_frame", "range_2", 30000, 123456);
+
+    //ELEMENTTEMPLATE.drawRange("content_frame", "content_1", datanode.original_data[0]);
+    //ELEMENTTEMPLATE.drawRange("content_frame", "content_2", datanode.original_data[1]);
     //NETWORK.network_vis(mail_data);
     //FRQUENCY.frequency_vis(mail_data);  
     //TIMELINE.timeline_vis(mail_data);

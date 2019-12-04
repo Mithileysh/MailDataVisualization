@@ -68,3 +68,12 @@ export function drawRange(parent_name,  div_name, min, max){
     right_text.setAttribute("value", max);
     new_div.appendChild(right_text);       
 }
+export function drawContent(parent_name, div_name, content){
+    // base div
+    var new_div = document.createElement('div');
+    new_div.id = 'div_'+div_name;
+    new_div.className = 'content_div';
+    new_div.innerHTML = content;
+    var target = document.getElementById(parent_name);
+    target.appendChild(new_div);    
+}
