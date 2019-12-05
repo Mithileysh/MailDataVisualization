@@ -14,20 +14,10 @@ function initial_function(datanode){
     // call all the functions need to be executed when onload
     var mail_data = datanode.original_data;
     //Shared_data = MAILDATA.mail_data(mail_data);
+    for(var key in datanode.keyMap){
+        ELEMENTTEMPLATE.drawSelectionBox(datanode, "focus_frame", "selection_frame", "content_frame",key, datanode.keyMap[key], key);
+    }
 
-    ELEMENTTEMPLATE.drawSelectionBox("focus_frame", "attritube_1");
-    ELEMENTTEMPLATE.drawSelectionBox("focus_frame", "attritube_2");
-    ELEMENTTEMPLATE.drawSelectionBox("focus_frame", "attritube_3");
-
-    ELEMENTTEMPLATE.drawTag("selection_frame", "in_queue_1");
-    ELEMENTTEMPLATE.drawTag("selection_frame", "in_queue_2");
-    ELEMENTTEMPLATE.drawTag("selection_frame", "in_queue_3");
-
-    ELEMENTTEMPLATE.drawRange("selection_frame", "range_1", 0, 100);
-    ELEMENTTEMPLATE.drawRange("selection_frame", "range_2", 30000, 123456);
-
-    //ELEMENTTEMPLATE.drawRange("content_frame", "content_1", datanode.original_data[0]);
-    //ELEMENTTEMPLATE.drawRange("content_frame", "content_2", datanode.original_data[1]);
     //NETWORK.network_vis(mail_data);
     //FRQUENCY.frequency_vis(mail_data);  
     //TIMELINE.timeline_vis(mail_data);

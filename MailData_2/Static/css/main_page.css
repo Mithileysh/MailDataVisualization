@@ -123,11 +123,25 @@
     color: #000000;    
 
 }
-.tag_button{
+.tag_div{
     height: 18%;
     width: 90%;
-    margin-left: 5%;
-    display: block;  
+    display: block;
+    background-color: #949494;
+    color: #000000;    
+
+}
+.tag_button{
+    height: 100%;
+    width: 70%;
+    display: inline-block;  
+    background-color: #ffffff;
+    color: #000000;       
+}
+.tag_close_button{
+    height: 100%;
+    width: 20%;
+    display: inline-block;  
     background-color: #ffffff;
     color: #000000;       
 }
@@ -166,4 +180,13 @@
     vertical-align:top;  
     background-color: #ffffff;
     color: #000000;     
+}
+.content_div{
+    height: 18%;
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 1%; 
+    display: block;  
+    background-color: #dfdfdf;
+    color: #000000;       
 }
