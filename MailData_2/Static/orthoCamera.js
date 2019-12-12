@@ -11,11 +11,19 @@ var viewport_height = 1000;
 var G_cube_info ={};
 var G_cube_position ={};
 var G_cube_size =10;
+var G_min_x = 0;
+var G_max_x = 0;
+var G_min_y = 0;
+var G_max_y = 0;
+var G_color_map = {};
+var G_init_color_map = 0;
+
 //init();
 //animate();
-export function init(renderType, mail_data) {
+export function init(renderType, datanode) {
 	//console.log("TO SEE WHETHER THIS WORK?");
 	
+	var mail_data = datanode.original_data;
 	var div = document.querySelector('#visualization_canvas');
 	//var divOffset = offset(div);
 	//console.log("DIV POSITION: "+ divOffset.left+", "+ divOffset.top);
@@ -36,6 +44,12 @@ export function init(renderType, mail_data) {
 	var max_x = frustumSize * aspect / 2;
 	var min_y = frustumSize / - 2;
 	var max_y = frustumSize / 2;
+
+	G_min_x = min_x;
+	G_max_x = max_x;
+	G_min_y = min_y;
+	G_max_y = max_y;
+
 	var [name_map, name_list, min_time, max_time]  = get_mail_node(mail_data, min_x, max_x, min_y, max_y);	
 	
 	scene = new THREE.Scene();
@@ -45,20 +59,23 @@ export function init(renderType, mail_data) {
 	//light.position.set( 1, 1, 1 ).normalize();
 	light.position.set( 0, 0, 1 ).normalize();
 	scene.add( light );
-
+	datanode.setScene(scene);
+/*
 	if(renderType == "timeline"){
-		[G_cube_position, G_cube_info] = renderTimeline(scene, name_list, name_map, mail_data, min_time, max_time, min_x, max_x);
+		[G_cube_position, G_cube_info] = renderTimeline(datanode.scene, name_list, name_map, mail_data, min_time, max_time, min_x, max_x);
 	}
 	else if(renderType == "network"){
-		renderNetwork(scene, name_list, name_map);
+		renderNetwork(datanode.scene, name_list, name_map);
 	}
 	else if(renderType == "frequency"){
-		[G_cube_position, G_cube_info] = renderFrequency(scene, name_list, name_map, mail_data, min_x, max_x, min_y, max_y);
+		[G_cube_position, G_cube_info] = renderFrequency(datanode.scenescene, name_list, name_map, mail_data, min_x, max_x, min_y, max_y);
 	}
 	else{
-		console.log("render something else.");
-	}
+		console.log("render something else. "+datanode.drawType);
+		[G_cube_position, G_cube_info] = renderTest(datanode.scene, min_x, max_x, min_y, max_y);
 
+	}
+*/
 	raycaster = new THREE.Raycaster();
 
 	renderer = new THREE.WebGLRenderer();
@@ -71,6 +88,105 @@ export function init(renderType, mail_data) {
 
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 	window.addEventListener( 'resize', onWindowResize, false );
+
+	//return scene;
+}
+export function renderData(datanode){
+
+		init("test", datanode);
+		animate();
+		[G_cube_position, G_cube_info] = new_renderTimeline(datanode, G_min_x, G_max_x);
+
+
+
+}
+
+export function updateRender(datanode){
+	clearScene(datanode.scene);
+	datanode.scene.background = new THREE.Color( 0xf0f0f0 );
+	var light = new THREE.DirectionalLight( 0xffffff, 1 );
+	//light.position.set( 1, 1, 1 ).normalize();
+	light.position.set( 0, 0, 1 ).normalize();
+	datanode.scene.add( light );
+	
+	if(datanode.drawType == "Timeline"){
+		[G_cube_position, G_cube_info] = new_renderTimeline(datanode, G_min_x, G_max_x, G_max_y, G_min_y);
+		//init("timeline", datanode);
+		//animate();
+	}
+	else if(datanode.drawType == "Network"){
+		//renderNetwork(scene, name_list, name_map);
+		//init("network", datanode);
+		//animate();
+	}
+	else if(datanode.drawType == "Stat"){
+		//[G_cube_position, G_cube_info] = renderFrequency(scene, name_list, name_map, mail_data, min_x, max_x, min_y, max_y);
+		//init("frequency", datanode);
+		//animate();
+	}
+	else{
+		console.log("render something else.");
+		//init("test", datanode);
+		//animate();
+		[G_cube_position, G_cube_info] = renderTest(datanode.scene, G_min_x, G_max_x, G_min_y, G_max_y);
+	}
+	//animate();
+
+}
+function clearScene(scene){
+	while(scene.children.length > 0){ 
+		scene.remove(scene.children[0]); 
+	}
+}
+function renderTest(scene, min_x, max_x, min_y, max_y){
+	console.log("render frequency");
+    var cube_position = {};
+	var cube_info = {}
+	var testArray = [
+		"3",
+		"2",
+		"1"
+		
+	];
+	console.log("RENDERTEST: enter here");
+    const cubes = testArray.map((test) => {
+       // var people_name = name;
+
+		var new_color = randomColor();
+		//console.log(typeof(0xa6f379))
+		const geometry = new THREE.BoxBufferGeometry( 20, 20, 20 );
+		const material = new THREE.MeshPhongMaterial({
+			color: new_color,
+		});
+		const cube = new THREE.Mesh(geometry, material);
+		//cubePivot.add(cube);
+		var obj = JSON.parse(JSON.stringify(cube));
+		scene.add(cube);
+
+		var width = max_x - min_x;
+		var height = max_y - min_y;
+		//var cube_x = Math.floor(name_map[people_name].x);
+		var cube_x = Math.floor(Math.random() * width -width/2);
+		var cube_y = Math.floor(Math.random() * height -height/2);;
+		var position_key = ""+cube_x+"_"+cube_y;
+		cube_position[position_key] = obj["object"]["uuid"];
+		cube_info[obj["object"]["uuid"]] = test;
+		cube.position.set(cube_x, cube_y, -100);
+
+		//cube.rotation.set(rand(Math.PI), rand(Math.PI), 0);
+		//cube.rotation.set(0, 0, 0);
+		cube.scale.set(rand(3, 6), rand(3, 6), rand(3, 6));
+		//var ratio = name_map[people_name]["end"].length/mail_data.length *100
+		//console.log(ratio);
+		//cube.scale.set(ratio+ 0.5, ratio + 0.5, ratio + 0.5);
+		//return cubePivot;
+		return cube;
+
+	})
+	console.log(cube_position);
+	console.log(cube_info);
+	
+	return [cube_position, cube_info]
 }
 function renderFrequency(scene, name_list, name_map, mail_data, min_x, max_x, min_y, max_y){
 	console.log("render frequency");
@@ -195,53 +311,126 @@ function renderNetwork(scene, name_list, name_map){
 	
 	return [cube_position, cube_info]
 }
+function new_renderTimeline(datanode, min_x, max_x, max_y, min_y){
+	var cube_position = {};
+	var cube_info = {}
+	var test_list = [];
+	var width = max_x - min_x;
+	var height = max_y - min_y;
+	console.log(datanode.nowFilter)
+	//console.log("start drawing");
+	// min max
+	var attribute_1 = datanode.chosenAttritube[0];
+	// reference 1
+	var attribute_2 = datanode.chosenAttritube[1];
+	// refernce 2
+	var attribute_3 = datanode.chosenAttritube[2];
+
+	if(G_init_color_map == 0){
+		// init color map
+		var sender_count = 0 
+		for(var item in datanode.nowFilter){
+			for(var small_item in datanode.nowFilter[item]){
+
+
+				var reference_name = datanode.nowFilter[item][small_item][attribute_2];
+				if(!(reference_name in G_color_map)){
+
+					var new_obj = {}
+					new_obj["color"] = randomColor();
+					//name_map[sender_name].x = -width/2;
+					//name_map[sender_name].y = height/2 - Math.floor(sender_count *G_cube_size);				
+					new_obj["x"] = -width/2;
+					new_obj["y"] = height/2 - Math.floor(sender_count *G_cube_size);	
+					
+					G_color_map[reference_name] = new_obj;
+					sender_count = sender_count + 1;
+				}
+				else{
+
+				}
+				
+
+			}
+		}
+	}
+	
+	// process objects
+	var div = document.querySelector('#visualization_canvas');
+
+	// process timeline data
+	var mail_count = 0;
+	var mail_data = datanode.nowFilter;
+	//const cubes = mail_data.map((mail) => {
+	//console.log(datanode.nowFilter);
+	var cubes = [];
+
+	var array_count = 0;
+	for(var index in datanode.nowFilter){
+		var new_cubes = datanode.nowFilter[index].map((mail) => {
+			var att2 = mail[attribute_2];
+			// it is a list
+			var att3 = mail[attribute_3];
+	
+			var new_color = G_color_map[att2]["color"];
+			const geometry = new THREE.BoxBufferGeometry( G_cube_size, G_cube_size, G_cube_size );
+			const material = new THREE.MeshPhongMaterial({
+				color: new_color,
+			});
+			
+	
+			const cube = new THREE.Mesh(geometry, material);
+			//cubePivot.add(cube);
+			var obj = JSON.parse(JSON.stringify(cube));
+			datanode.scene.add(cube);
+	
+	
+			var cube_x = Math.floor(G_color_map[att2]["x"]);
+			var cube_y = Math.floor(G_color_map[att2]["y"]);
+			
+			if(att3.length > 0){
+				var cube_2_x = Math.floor(rand(0, 600));
+				var cube_2_y = Math.floor(rand(0, 800));
+				var position_key = ""+cube_x+"_"+cube_y+"_"+cube_2_x+"_"+cube_2_y;
+		
+			}
+			else{
+				var position_key = ""+cube_x+"_"+cube_y;
+			}
+			
+			//var mail = mail_data[0];
+			cube_position[position_key] = obj["object"]["uuid"];
+			var mail_obj = JSON.parse(JSON.stringify(mail));
+	
+			cube_info[obj["object"]["uuid"]] ="time: "+mail_obj[attribute_1]+" from: "+mail_obj[attribute_2]+", to: "+mail_obj[attribute_3];
+			
+
+			// fix the coordinate shift
+			var min_axis = datanode.keyRange[attribute_1]["min"];
+			var max_axis = datanode.keyRange[attribute_1]["max"];
+			
+			const x = computeTimeLocation(mail[attribute_1], min_axis, max_axis, width) - width/2;
+			const y = G_color_map[att2].y; 
+		
+			//console.log("sender at: "+y);
+			cube.position.set(x, y, -100);
+	
+			return cube;
+		});
+		cubes[array_count] = new_cubes;
+		array_count = array_count + 1;
+
+	}
+
+
+	return [cube_position, cube_info]
+
+}
 function renderTimeline(scene, name_list, name_map, mail_data, min_time, max_time, min_x, max_x){
 	var cube_position = {};
 	var cube_info = {}
 	var test_list = [];
 	
-/*	
-	for(var i = 0; i < 100; i++){
-		test_list.push(i);
-	}
-	//const planes = test_list.map((number_mail) => {
-    const planes = mail_data.map((mail) => {
-        //console.log(mail);
-        //console.log(name_map[name]["end"].length)
-		//var mail = mail_data[number_mail];
-		var sender_name = mail["sender"];
-        // it is a list
-        var receiver_name = mail["receiver"];
-
-        const planeSize = 5;
-        const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
-        const planePivot = new THREE.Object3D();
-        scene.add(planePivot);
-
-        var new_color = name_map[sender_name]["color"];
-        const planeMat = new THREE.MeshBasicMaterial( {color: new_color, side: THREE.DoubleSide} );
-        const mesh = new THREE.Mesh(planeGeo, planeMat);
-        planePivot.add(mesh);
-        return planePivot;
-        
-	});
-
-    var mail_count = 0;
-    for(var plane in planes){
-        //console.log(planes[plane]);
-        var now_name = mail_data[mail_count]["sender"];
-        //console.log(min_time+", "+max_time+", "+width);
-		var width = max_x - min_x;
-		//console.log("width: "+width);
-		const x = computeTimeLocation(mail_data[mail_count]["time"], min_time, max_time, width)- width/2;
-		//console.log(mail_data[mail_count]["time"])
-		const y = name_map[now_name].y; 
-		//console.log("location: "+x+", "+y)
-        planes[plane].position.set(x, y, -100);
-        
-       mail_count = mail_count + 1;
-    }	
-*/
 	// process objects
 	var div = document.querySelector('#visualization_canvas');
 

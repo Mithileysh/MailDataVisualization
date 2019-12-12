@@ -18,12 +18,23 @@
 	color: rgba(255, 255, 255, 0);
     overflow-x: hidden;
 }
+#mode_frame{
+    height: 10%;
+    width: 90%;
+    position: absolute;
+    z-index: 1;
+    top: 0%;
+    left: 5%;
+    background-color: #3a3a3a;
+	color: rgb(255, 255, 255);
+    overflow-x: hidden;
+}
 #focus_frame{
     height: 15%;
     width: 90%;
     position: absolute;
     z-index: 1;
-    top: 0%;
+    top: 12%;
     left: 5%;
     background-color: #3a3a3a;
 	color: rgb(255, 255, 255);
@@ -34,18 +45,18 @@
     width: 90%;
     position: absolute;
     z-index: 1;
-    top: 17%;
+    top: 29%;
     left: 5%;
     background-color: #3a3a3a;
 	color: rgba(255, 255, 255, 0);
     overflow-x: hidden;
 }
 #content_frame{
-    height: 65%;
+    height: 60%;
     width: 90%;
     position: absolute;
     z-index: 1;
-    top: 34%;
+    top: 46%;
     left: 5%;
     background-color: #3a3a3a;
 	color: rgba(255, 255, 255, 0);

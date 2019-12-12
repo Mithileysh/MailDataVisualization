@@ -1,3 +1,6 @@
+
+import * as ORTHOCAMERA from "./orthoCamera.js"
+
 export function drawSelectionBox(datanode, parent_name, relative_div, content_div, div_name, type, value){
     // add a small div
     // a radio box
@@ -39,7 +42,7 @@ export function drawSelectionBox(datanode, parent_name, relative_div, content_di
             }
             else if(type == "range"){
                 // get range
-                drawRange(relative_div, value, datanode.keyRange[value]["min"], datanode.keyRange[value]["max"])
+                drawRange(datanode, relative_div, content_div, value, datanode.keyRange[value]["min"], datanode.keyRange[value]["max"])
             }
             var data_count = 0;
             for(var now_attritube in datanode.keyDicList[value]){
@@ -72,7 +75,7 @@ export function drawSelectionBox(datanode, parent_name, relative_div, content_di
     //var target = document.getElementById(parent_name);
     new_div.appendChild(new_div_text);
 }
-export function drawTag(datanode, parent_name, content_div, tag_name, attritube){
+export function drawTag(datanode, parent_name, content_div, tag_name, attribute){
     var new_div = document.createElement('div');
     new_div.id = 'div_'+tag_name;
     new_div.className = 'tag_div';
@@ -111,6 +114,9 @@ export function drawTag(datanode, parent_name, content_div, tag_name, attritube)
     new_div.appendChild(tag_close);
     tag_close.onclick = function() { // Note this is a function
         console.log(tag_close.id);
+
+        //datanode.setRenderType("Stat");
+        ORTHOCAMERA.updateRender(datanode);
         //var resetBottun = document.getElementById("resetButton");
         //var parentOfResetButton = resetBottun.parentElement;
         //parentOfResetButton.removeChild(resetBottun);
@@ -121,16 +127,16 @@ export function drawTag(datanode, parent_name, content_div, tag_name, attritube)
         while (clear_target_2.firstChild) {
             clear_target_2.removeChild(clear_target_2.firstChild);
         }
-        console.log(datanode.nowFilter);
+        //console.log(datanode.nowFilter);
 
         delete datanode.nowFilter[tag_name];
-        console.log(datanode.nowFilter);
+        //console.log(datanode.nowFilter);
         var data_count = 0;
         for(var now_attritube in datanode.nowFilter){
             //console.log(now_attritube);
             if(!(now_attritube == tag_name)){
-                for(var per_data in datanode.keyDicList[attritube][now_attritube ]){
-                    drawContent(content_div, data_count, JSON.stringify(datanode.keyDicList[attritube][now_attritube ][per_data]));
+                for(var per_data in datanode.keyDicList[attribute][now_attritube ]){
+                    drawContent(content_div, data_count, JSON.stringify(datanode.keyDicList[attribute][now_attritube ][per_data]));
                     data_count = data_count +1;
                 }
             }
@@ -140,7 +146,7 @@ export function drawTag(datanode, parent_name, content_div, tag_name, attritube)
     };
 
 }
-export function drawRange(parent_name,  div_name, min, max){
+export function drawRange(datanode, parent_name,  content_div, div_name, min, max){
     
     // base div
     var new_div = document.createElement('div');
@@ -172,9 +178,57 @@ export function drawRange(parent_name,  div_name, min, max){
     new_div.appendChild(right_text);       
     left_text.onchange = function(){
         console.log("now min = "+left_text.value +", max = "+right_text.value);
+        
+        // update now_filter
+        var clear_target_2 = document.getElementById(content_div);
+        while (clear_target_2.firstChild) {
+            clear_target_2.removeChild(clear_target_2.firstChild);
+        }
+        var data_count = 0;
+        for(var key in datanode.nowFilter){
+            if(key < left_text.value){
+                //console.log(datanode.nowFilter);
+
+                delete datanode.nowFilter[key];  
+                //console.log(datanode.nowFilter);
+                              
+            }
+            else{
+
+                for(var current_data in datanode.nowFilter[key]){
+                    drawContent(content_div, data_count, JSON.stringify(datanode.nowFilter[key][current_data]));
+                    var data_count = data_count +1;
+                }
+
+            }            
+        }
+        ORTHOCAMERA.renderData(datanode);
+        
+        
     }
     right_text.onchange = function(){
         console.log("now min = "+left_text.value +", max = "+right_text.value);
+        // update now_filter
+        var clear_target_2 = document.getElementById(content_div);
+        while (clear_target_2.firstChild) {
+            clear_target_2.removeChild(clear_target_2.firstChild);
+        }
+        var data_count = 0;
+        for(var key in datanode.nowFilter){
+            if(key > right_text.value){
+                //console.log(datanode.nowFilter);
+                delete datanode.nowFilter[key];  
+                //console.log(datanode.nowFilter);             
+            }
+            else{
+                for(var current_data in datanode.nowFilter[key]){
+                    drawContent(content_div, data_count, JSON.stringify(datanode.nowFilter[key][current_data]));
+                    var data_count = data_count +1;
+                }
+
+            }
+        }
+        ORTHOCAMERA.renderData(datanode);
     }
 
 }

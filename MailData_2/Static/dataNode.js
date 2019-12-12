@@ -7,6 +7,9 @@ export default class DataNode{
         this.keyMap = {};
         this.keyRange = {};
         this.keyPeriod = {};
+        this.drawType = "";
+        this.scene ="";
+        this.chosenAttritube = [];
         // key: dictionary that use the assigned attribute as the key of this dictionary
         // for value type variables, with specific keys (like: name); for range type variables, with ranged keys (like: time) 
         this.keyDicList = {};
@@ -31,6 +34,15 @@ export default class DataNode{
             //console.log()
             //console.log("DATANODE: new range key: "+now_threshold);
             return now_threshold;
+        }
+        this.setScene = function(scene){
+            this.scene = scene;
+        }
+        this.setChosenAttribute = function(attributes){
+            this.chosenAttritube = attributes;
+        }
+        this.setRenderType = function(new_type){
+            this.drawType = new_type;
         }
         this.setKeyRange = function(key_name, min_max, value){
             if(!(key_name in this.keyRange)){
@@ -75,7 +87,20 @@ export default class DataNode{
 
 
         }
-
+        this.fileTruncate = function(number_record, data){
+            // if data less than number of record, then do nothing
+            // otherwise, truncate to assigned data numbers
+            var new_data  =[];
+            if(data.length >= number_record){
+                console.log("total number = "+data.length+", truncate to = "+number_record);
+                new_data = data.slice(0, number_record -1);
+            }
+            else{
+                console.log("total number = "+data.length+", not truncate");
+                new_data = data;
+            }
+            return new_data
+        }
     }
     testFunction(){
         console.log("This function is to make sure the class DataNode is functional.");

@@ -18,6 +18,9 @@ function initial_function(datanode){
         ELEMENTTEMPLATE.drawSelectionBox(datanode, "focus_frame", "selection_frame", "content_frame",key, datanode.keyMap[key], key);
     }
 
+    //call visualization function in here
+
+
     //NETWORK.network_vis(mail_data);
     //FRQUENCY.frequency_vis(mail_data);  
     //TIMELINE.timeline_vis(mail_data);
@@ -30,13 +33,17 @@ function initial_function(datanode){
 
 }
 
-$.getJSON('/real/enron_mail_20150507_1999_2000.json', function(data) {
+$.getJSON('/real/enron_mail_20150507.json', function(data) {
     
 
     var datanode = new DataNode();
     datanode.testFunction();
 
-    datanode.original_data = data;
+    // record the limitation of the visualization
+    var target_data = datanode.fileTruncate(5000, data);
+ 
+    
+    datanode.original_data = target_data;
     datanode.initKeyMap();
     // //check the keys
     // const keys = Object.keys(datanode.original_data);
@@ -46,6 +53,14 @@ $.getJSON('/real/enron_mail_20150507_1999_2000.json', function(data) {
     // set type for special attribute
     datanode.setKeyValue("time", "range");
     datanode.setKeyValue("sentiment", "range");
+    datanode.setKeyValue("oddness", "range");
+
+    //datanode.drawType = "Timeline";
+    datanode.drawType = "Test";
+    datanode.chosenAttritube = ["oddness", "sender", "receiver"];
+    ORTHOCAMERA.renderData(datanode);
+    //datanode.drawType = "Network";
+    //datanode.drawType = "Stat";
     
     // year: 31591200
     // month: 2596530
