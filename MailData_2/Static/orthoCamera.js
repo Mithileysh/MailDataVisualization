@@ -10,13 +10,14 @@ var viewport_width = 1000;
 var viewport_height = 1000;
 var G_cube_info ={};
 var G_cube_position ={};
-var G_cube_size =10;
+var G_cube_size =5;
 var G_min_x = 0;
 var G_max_x = 0;
 var G_min_y = 0;
 var G_max_y = 0;
 var G_color_map = {};
 var G_init_color_map = 0;
+var G_datanode = ""; 
 
 //init();
 //animate();
@@ -93,33 +94,41 @@ export function init(renderType, datanode) {
 }
 export function renderData(datanode){
 
-		init("test", datanode);
-		animate();
-		[G_cube_position, G_cube_info] = new_renderTimeline(datanode, G_min_x, G_max_x);
+		
+	G_datanode = datanode;
+	init("test", datanode);
+	console.log("RENDER: ");
+	console.log(datanode);
+	animate();
+	[G_cube_position, G_cube_info] = new_renderTimeline(datanode, G_min_x, G_max_x);
 
 
 
 }
 
 export function updateRender(datanode){
+	G_datanode = datanode;
 	clearScene(datanode.scene);
 	datanode.scene.background = new THREE.Color( 0xf0f0f0 );
 	var light = new THREE.DirectionalLight( 0xffffff, 1 );
 	//light.position.set( 1, 1, 1 ).normalize();
 	light.position.set( 0, 0, 1 ).normalize();
 	datanode.scene.add( light );
+	console.log("RENDER: current data number with the filter = "+Object.keys(datanode.nowFilter).length);
 	
 	if(datanode.drawType == "Timeline"){
-		[G_cube_position, G_cube_info] = new_renderTimeline(datanode, G_min_x, G_max_x, G_max_y, G_min_y);
+		[G_cube_position, G_cube_info] = renderTimeline_new(datanode, G_min_x, G_max_x, G_min_y, G_max_y);
 		//init("timeline", datanode);
 		//animate();
 	}
 	else if(datanode.drawType == "Network"){
+		[G_cube_position, G_cube_info] = renderNetwork_new(datanode, G_min_x, G_max_x, G_min_y, G_max_y);
 		//renderNetwork(scene, name_list, name_map);
 		//init("network", datanode);
 		//animate();
 	}
 	else if(datanode.drawType == "Stat"){
+		[G_cube_position, G_cube_info] = renderStat_new(datanode, G_min_x, G_max_x, G_min_y, G_max_y);
 		//[G_cube_position, G_cube_info] = renderFrequency(scene, name_list, name_map, mail_data, min_x, max_x, min_y, max_y);
 		//init("frequency", datanode);
 		//animate();
@@ -128,7 +137,7 @@ export function updateRender(datanode){
 		console.log("render something else.");
 		//init("test", datanode);
 		//animate();
-		[G_cube_position, G_cube_info] = renderTest(datanode.scene, G_min_x, G_max_x, G_min_y, G_max_y);
+		[G_cube_position, G_cube_info] = renderTest(datanode, G_min_x, G_max_x, G_min_y, G_max_y);
 	}
 	//animate();
 
@@ -138,7 +147,59 @@ function clearScene(scene){
 		scene.remove(scene.children[0]); 
 	}
 }
-function renderTest(scene, min_x, max_x, min_y, max_y){
+function renderStat_new(datanode, min_x, max_x, min_y, max_y){
+	console.log("render Statistic value");
+    var cube_position = {};
+	var cube_info = {}
+	var scene = datanode.scene
+	console.log("RENDERTEST: enter here");
+	
+	// for one attritube visualization
+	var att_1 = datanode.chosenAttritube[0];
+	var protion = 0.1;
+	var bound =5;
+
+
+	console.log("VISUAL: the attribute is "+att_1);
+	console.log(datanode.keyDicList[att_1])
+	console.log(datanode.nowFilter)
+
+	for(var att in datanode.nowFilter){
+		var factor = datanode.nowFilter[att].length * protion;
+		if(factor >= bound){
+			var new_color = randomColor();
+			const geometry = new THREE.BoxBufferGeometry( G_cube_size, G_cube_size, G_cube_size );
+			const material = new THREE.MeshPhongMaterial({
+				color: new_color,
+			});
+			const cube = new THREE.Mesh(geometry, material);
+			//cubePivot.add(cube);
+			var obj = JSON.parse(JSON.stringify(cube));
+
+			var width = max_x - min_x;
+			var height = max_y - min_y;
+			//var cube_x = Math.floor(name_map[people_name].x);
+			var cube_x = Math.floor(Math.random() * width -width/2);
+			var cube_y = Math.floor(Math.random() * height -height/2);;
+			var position_key = ""+cube_x+"_"+cube_y;
+			cube_position[position_key] = obj["object"]["uuid"];
+			cube_info[obj["object"]["uuid"]] = att;
+			cube.position.set(cube_x, cube_y, -100);
+
+			//cube.rotation.set(rand(Math.PI), rand(Math.PI), 0);
+			//cube.rotation.set(0, 0, 0);
+
+			cube.scale.set(factor, factor, factor);
+			scene.add(cube);
+		}		
+		
+	}
+	console.log(cube_position);
+	console.log(cube_info);
+	
+	return [cube_position, cube_info]
+}
+function renderNetwork_new(datanode, min_x, max_x, min_y, max_y){
 	console.log("render frequency");
     var cube_position = {};
 	var cube_info = {}
@@ -148,6 +209,109 @@ function renderTest(scene, min_x, max_x, min_y, max_y){
 		"1"
 		
 	];
+	var scene = datanode.scene;
+	console.log("RENDERTEST: enter here");
+    const cubes = testArray.map((test) => {
+       // var people_name = name;
+
+		var new_color = randomColor();
+		//console.log(typeof(0xa6f379))
+		const geometry = new THREE.BoxBufferGeometry( 20, 20, 20 );
+		const material = new THREE.MeshPhongMaterial({
+			color: new_color,
+		});
+		const cube = new THREE.Mesh(geometry, material);
+		//cubePivot.add(cube);
+		var obj = JSON.parse(JSON.stringify(cube));
+		scene.add(cube);
+
+		var width = max_x - min_x;
+		var height = max_y - min_y;
+		//var cube_x = Math.floor(name_map[people_name].x);
+		var cube_x = Math.floor(Math.random() * width -width/2);
+		var cube_y = Math.floor(Math.random() * height -height/2);;
+		var position_key = ""+cube_x+"_"+cube_y;
+		cube_position[position_key] = obj["object"]["uuid"];
+		cube_info[obj["object"]["uuid"]] = test;
+		cube.position.set(cube_x, cube_y, -100);
+
+		//cube.rotation.set(rand(Math.PI), rand(Math.PI), 0);
+		//cube.rotation.set(0, 0, 0);
+		cube.scale.set(rand(3, 6), rand(3, 6), rand(3, 6));
+		//var ratio = name_map[people_name]["end"].length/mail_data.length *100
+		//console.log(ratio);
+		//cube.scale.set(ratio+ 0.5, ratio + 0.5, ratio + 0.5);
+		//return cubePivot;
+		return cube;
+
+	})
+	console.log(cube_position);
+	console.log(cube_info);
+	
+	return [cube_position, cube_info]
+}
+function renderTimeline_new(datanode, min_x, max_x, min_y, max_y){
+	console.log("render frequency");
+    var cube_position = {};
+	var cube_info = {}
+	var testArray = [
+		"3",
+		"2",
+		"1"
+		
+	];
+	var scene = datanode.scene;
+	console.log("RENDERTEST: enter here");
+    const cubes = testArray.map((test) => {
+       // var people_name = name;
+
+		var new_color = randomColor();
+		//console.log(typeof(0xa6f379))
+		const geometry = new THREE.BoxBufferGeometry( 20, 20, 20 );
+		const material = new THREE.MeshPhongMaterial({
+			color: new_color,
+		});
+		const cube = new THREE.Mesh(geometry, material);
+		//cubePivot.add(cube);
+		var obj = JSON.parse(JSON.stringify(cube));
+		scene.add(cube);
+
+		var width = max_x - min_x;
+		var height = max_y - min_y;
+		//var cube_x = Math.floor(name_map[people_name].x);
+		var cube_x = Math.floor(Math.random() * width -width/2);
+		var cube_y = Math.floor(Math.random() * height -height/2);;
+		var position_key = ""+cube_x+"_"+cube_y;
+		cube_position[position_key] = obj["object"]["uuid"];
+		cube_info[obj["object"]["uuid"]] = test;
+		cube.position.set(cube_x, cube_y, -100);
+
+		//cube.rotation.set(rand(Math.PI), rand(Math.PI), 0);
+		//cube.rotation.set(0, 0, 0);
+		cube.scale.set(rand(3, 6), rand(3, 6), rand(3, 6));
+		//var ratio = name_map[people_name]["end"].length/mail_data.length *100
+		//console.log(ratio);
+		//cube.scale.set(ratio+ 0.5, ratio + 0.5, ratio + 0.5);
+		//return cubePivot;
+		return cube;
+
+	})
+	console.log(cube_position);
+	console.log(cube_info);
+	
+	return [cube_position, cube_info]
+}
+function renderTest(datanode, min_x, max_x, min_y, max_y){
+	console.log("render frequency");
+    var cube_position = {};
+	var cube_info = {}
+	var testArray = [
+		"3",
+		"2",
+		"1"
+		
+	];
+	var scene = datanode.scene;
 	console.log("RENDERTEST: enter here");
     const cubes = testArray.map((test) => {
        // var people_name = name;
@@ -694,7 +858,10 @@ function render() {
 				c.setAttribute('width', style_width * dpi);
 			}
 	
-	
+			//console.log("MOUSEOVER: ");
+			//console.log(G_datanode);
+			
+			G_datanode.currentSelection = G_cube_info[obj["object"]["uuid"]];
 			fix_dpi();
 			ctx.clearRect(0,0,c.width,c.height);
 			ctx.font ="14px Arial";

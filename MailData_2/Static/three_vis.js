@@ -56,11 +56,13 @@ $.getJSON('/real/enron_mail_20150507.json', function(data) {
     datanode.setKeyValue("oddness", "range");
 
     //datanode.drawType = "Timeline";
-    datanode.drawType = "Test";
-    datanode.chosenAttritube = ["oddness", "sender", "receiver"];
-    ORTHOCAMERA.renderData(datanode);
     //datanode.drawType = "Network";
-    //datanode.drawType = "Stat";
+    datanode.drawType = "Stat";
+    //datanode.drawType = "Test";
+    //datanode.chosenAttritube = ["oddness", "sender", "receiver"];
+    datanode.chosenAttritube = ["receiver"];
+    ORTHOCAMERA.renderData(datanode);
+
     
     // year: 31591200
     // month: 2596530

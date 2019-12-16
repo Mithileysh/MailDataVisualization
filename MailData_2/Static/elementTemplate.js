@@ -116,7 +116,7 @@ export function drawTag(datanode, parent_name, content_div, tag_name, attribute)
         console.log(tag_close.id);
 
         //datanode.setRenderType("Stat");
-        ORTHOCAMERA.updateRender(datanode);
+
         //var resetBottun = document.getElementById("resetButton");
         //var parentOfResetButton = resetBottun.parentElement;
         //parentOfResetButton.removeChild(resetBottun);
@@ -141,7 +141,7 @@ export function drawTag(datanode, parent_name, content_div, tag_name, attribute)
                 }
             }
         }        
-        
+        ORTHOCAMERA.updateRender(datanode);        
 
     };
 

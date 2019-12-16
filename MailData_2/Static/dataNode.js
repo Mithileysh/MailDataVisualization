@@ -10,6 +10,7 @@ export default class DataNode{
         this.drawType = "";
         this.scene ="";
         this.chosenAttritube = [];
+        this.currentSelection = "";
         // key: dictionary that use the assigned attribute as the key of this dictionary
         // for value type variables, with specific keys (like: name); for range type variables, with ranged keys (like: time) 
         this.keyDicList = {};
